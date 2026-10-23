@@ -16,7 +16,7 @@ $uploadedFilePath = null;
 // Ensure upload directory exists
 $uploadDir = __DIR__ . '/assets/uploads/';
 if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
+    @mkdir($uploadDir, 0777, true);
 }
 
 // Handle Profile Update & Avatar File Upload (Security Lab Point)

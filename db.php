@@ -1,5 +1,12 @@
 <?php
 // Fakizon - Database & Environment Setup
+if ((getenv('VERCEL') || isset($_ENV['VERCEL'])) && session_status() === PHP_SESSION_NONE) {
+    if (!file_exists('/tmp/sessions')) {
+        @mkdir('/tmp/sessions', 0777, true);
+    }
+    @ini_set('session.save_path', '/tmp/sessions');
+}
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -19,7 +26,18 @@ function get_db_connection() {
         return $pdo;
     }
 
-    $dbFile = __DIR__ . '/fakizon.db';
+    // In Vercel serverless environment, filesystem is read-only except /tmp
+    if (getenv('VERCEL') || isset($_ENV['VERCEL'])) {
+        $dbFile = '/tmp/fakizon.db';
+        if (!file_exists($dbFile) || filesize($dbFile) === 0) {
+            $sourceDb = __DIR__ . '/fakizon.db';
+            if (file_exists($sourceDb) && filesize($sourceDb) > 0) {
+                @copy($sourceDb, $dbFile);
+            }
+        }
+    } else {
+        $dbFile = __DIR__ . '/fakizon.db';
+    }
     $needInit = !file_exists($dbFile) || filesize($dbFile) === 0;
 
     try {
