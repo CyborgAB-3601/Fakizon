@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="lapScreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="50%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#6366f1"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="#f8fafc" rx="16"/>
+  <!-- Display Shadow -->
+  <rect x="75" y="85" width="250" height="160" rx="8" fill="#94a3b8" opacity="0.3"/>
+  <!-- Screen Lid -->
+  <rect x="70" y="80" width="260" height="165" rx="8" fill="#1e293b"/>
+  <!-- Screen Glass & Wallpaper -->
+  <rect x="80" y="90" width="240" height="145" rx="4" fill="url(#lapScreen)"/>
+  <!-- Screen App Windows -->
+  <rect x="95" y="105" width="100" height="60" rx="4" fill="rgba(255,255,255,0.2)"/>
+  <rect x="140" y="130" width="120" height="80" rx="4" fill="rgba(15,23,42,0.6)"/>
+  <!-- Laptop Notch / Camera -->
+  <circle cx="200" cy="85" r="2.5" fill="#475569"/>
+  <!-- Base Chassis -->
+  <polygon points="50,250 350,250 365,270 35,270" fill="#94a3b8"/>
+  <polygon points="53,248 347,248 345,260 55,260" fill="#cbd5e1"/>
+  <!-- Trackpad Cutout -->
+  <rect x="175" y="254" width="50" height="8" rx="2" fill="#94a3b8"/>
+  <!-- Bottom Lip -->
+  <rect x="35" y="270" width="330" height="6" rx="3" fill="#64748b"/>
+</svg>

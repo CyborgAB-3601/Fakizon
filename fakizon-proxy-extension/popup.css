@@ -1,0 +1,733 @@
+/* ============================================================
+   EXPLOIT ZERO - PROXY EXTENSION (CYBERSECURITY HUD)
+   Pixel-perfect match to uploaded UI
+   ============================================================ */
+
+:root {
+  --bg-primary: #060a12;
+  --bg-secondary: #0c1220;
+  --bg-card: rgba(15, 23, 42, 0.7);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(56, 189, 248, 0.4);
+  
+  --emerald-neon: #10b981;
+  --emerald-glow: #059669;
+  --emerald-bright: #34d399;
+  --emerald-bg: rgba(16, 185, 129, 0.15);
+  
+  --cyan-neon: #06b6d4;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  
+  --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-stack);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  width: 390px;
+  min-height: 680px;
+  background: radial-gradient(circle at 50% 15%, #0f1c30 0%, #070b14 70%, #04070d 100%);
+  color: var(--text-main);
+  padding: 20px 20px 24px 20px;
+  user-select: none;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ================= Header Bar ================= */
+.header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-shield-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.brand-shield-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--emerald-bright);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.6));
+}
+
+.brand-title {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brand-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--emerald-bright);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--emerald-bright);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover {
+  color: #fff;
+  transform: rotate(20deg);
+}
+
+/* ================= Sub-header Pills Row ================= */
+.sub-header-pills {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.node-pill {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(8px);
+  padding: 6px 14px 6px 10px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.node-pill:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(30, 41, 59, 0.8);
+}
+
+.node-flag-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.node-flag-icon img, .node-flag-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.node-info-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.node-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.node-subtitle {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.node-caret {
+  color: var(--text-muted);
+  font-size: 10px;
+  margin-left: 2px;
+}
+
+.latency-pill {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-subtle);
+  padding: 8px 14px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.latency-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.latency-bar {
+  width: 2.5px;
+  background-color: var(--emerald-bright);
+  border-radius: 1px;
+}
+.latency-bar:nth-child(1) { height: 4px; }
+.latency-bar:nth-child(2) { height: 7px; }
+.latency-bar:nth-child(3) { height: 10px; }
+.latency-bar:nth-child(4) { height: 12px; }
+
+.latency-val {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--emerald-bright);
+}
+
+/* ================= Holographic Cyber Orb Section ================= */
+.orb-stage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 10px 0 16px 0;
+}
+
+.orb-wrapper {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Celestial Orbital Rings */
+.orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  pointer-events: none;
+}
+
+.orbit-1 {
+  width: 210px;
+  height: 130px;
+  transform: rotate(-25deg);
+  border-style: dashed;
+  animation: orbitRotate 18s linear infinite;
+}
+
+.orbit-2 {
+  width: 200px;
+  height: 110px;
+  transform: rotate(40deg);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  animation: orbitRotateRev 22s linear infinite;
+}
+
+@keyframes orbitRotate {
+  0% { transform: rotate(-25deg) rotate(0deg); }
+  100% { transform: rotate(-25deg) rotate(360deg); }
+}
+
+@keyframes orbitRotateRev {
+  0% { transform: rotate(40deg) rotate(0deg); }
+  100% { transform: rotate(40deg) rotate(-360deg); }
+}
+
+/* Particle flares on rings */
+.orbit-dot {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: var(--emerald-bright);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--emerald-bright);
+}
+.dot-a { top: 10px; left: 30px; }
+.dot-b { bottom: 20px; right: 40px; }
+.dot-c { top: 40px; right: 20px; }
+
+/* The Central Sphere */
+.sphere-outer-glow {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, rgba(5, 150, 105, 0.15) 50%, rgba(6, 11, 20, 0) 75%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  box-shadow: 0 0 50px rgba(16, 185, 129, 0.25);
+  transition: all 0.5s ease;
+}
+
+.sphere-core {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #059669 0%, #064e3b 45%, #022c22 85%, #021712 100%);
+  border: 2px solid rgba(52, 211, 153, 0.6);
+  box-shadow: inset 0 0 20px rgba(52, 211, 153, 0.5), 0 0 30px rgba(16, 185, 129, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s ease;
+}
+
+/* Star dust / sparkle texture */
+.sphere-core::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+  background-size: 8px 8px;
+  opacity: 0.35;
+}
+
+.lock-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(2, 44, 34, 0.85);
+  border: 1px solid rgba(52, 211, 153, 0.7);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  transition: all 0.3s ease;
+}
+
+.lock-badge svg {
+  width: 24px;
+  height: 24px;
+  stroke: var(--emerald-bright);
+  fill: none;
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 5px rgba(52, 211, 153, 0.8));
+}
+
+/* OFF State for Orb */
+body.proxy-off .sphere-outer-glow {
+  background: radial-gradient(circle, rgba(100, 116, 139, 0.2) 0%, rgba(6, 11, 20, 0) 70%);
+  box-shadow: none;
+}
+body.proxy-off .sphere-core {
+  background: radial-gradient(circle at 40% 35%, #334155 0%, #1e293b 60%, #0f172a 100%);
+  border-color: #475569;
+  box-shadow: inset 0 0 15px rgba(100, 116, 139, 0.3);
+}
+body.proxy-off .lock-badge {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: #64748b;
+  box-shadow: none;
+}
+body.proxy-off .lock-badge svg {
+  stroke: #94a3b8;
+  filter: none;
+}
+body.proxy-off .orbit-ring {
+  border-color: rgba(100, 116, 139, 0.15);
+}
+body.proxy-off .orbit-dot {
+  background-color: #64748b;
+  box-shadow: none;
+}
+
+/* ================= Status Header & Big Connected Button ================= */
+.status-title {
+  font-size: 19px;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 10px;
+  letter-spacing: -0.2px;
+}
+
+.status-highlight-on {
+  color: var(--emerald-bright);
+  font-weight: 800;
+}
+
+.status-highlight-off {
+  color: #94a3b8;
+  font-weight: 800;
+}
+
+.status-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 3px;
+  margin-bottom: 18px;
+}
+
+/* The Grand Connected Toggle Button (Draggable & Slidable with Snap) */
+.main-toggle-pill {
+  width: 186px;
+  height: 50px;
+  position: relative;
+  border-radius: 28px;
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+
+.main-toggle-pill.dragging,
+.main-toggle-pill.dragging .toggle-pill-knob {
+  cursor: grabbing !important;
+}
+
+.toggle-track-bg-off {
+  position: absolute;
+  inset: 0;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 28px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.toggle-track-bg-on {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 28px;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.45);
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.toggle-pill-label {
+  position: absolute;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  z-index: 2;
+}
+
+.label-connected {
+  left: 22px;
+  color: #ffffff;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.label-disconnected {
+  right: 22px;
+  color: #94a3b8;
+  opacity: 0;
+  transform: translateX(8px);
+}
+
+.toggle-pill-knob {
+  position: absolute;
+  top: 6px;
+  left: 0;
+  width: 38px;
+  height: 38px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.45);
+  z-index: 5;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(142px);
+  transition: transform 0.38s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease;
+}
+
+.knob-inner-glint {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.25);
+  transition: background-color 0.3s ease;
+}
+
+/* OFF Button State */
+body.proxy-off .toggle-track-bg-off {
+  opacity: 1;
+}
+
+body.proxy-off .toggle-track-bg-on {
+  opacity: 0;
+}
+
+body.proxy-off .label-connected {
+  opacity: 0;
+  transform: translateX(-8px);
+}
+
+body.proxy-off .label-disconnected {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+body.proxy-off .toggle-pill-knob {
+  background-color: #94a3b8;
+  transform: translateX(6px);
+}
+
+body.proxy-off .knob-inner-glint {
+  background: rgba(15, 23, 42, 0.3);
+}
+
+/* ================= 4-Column Stat Matrix Strip ================= */
+.stat-strip-container {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 22px;
+  backdrop-filter: blur(10px);
+}
+
+.stat-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.stat-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--emerald-bright);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.stat-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 9.5px;
+  color: var(--text-dim);
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.stat-val {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--emerald-bright);
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+body.proxy-off .stat-icon {
+  color: var(--text-dim);
+}
+body.proxy-off .stat-val {
+  color: var(--text-muted);
+}
+
+/* ================= Recent Vulnerabilities Section ================= */
+.section-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.section-headline {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.see-all-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s;
+}
+
+.see-all-link:hover {
+  color: var(--emerald-bright);
+}
+
+.vuln-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vuln-card-item {
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.vuln-card-item:hover {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.vuln-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-red {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+}
+
+.icon-blue {
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  color: #60a5fa;
+}
+
+.icon-purple {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.25);
+  color: #c084fc;
+}
+
+.vuln-info-box {
+  flex: 1;
+  min-width: 0;
+}
+
+.vuln-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vuln-sub {
+  font-size: 11px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vuln-meta-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.severity-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.sev-critical {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.sev-high {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.sev-medium {
+  background: rgba(234, 179, 8, 0.15);
+  color: #fde047;
+  border: 1px solid rgba(234, 179, 8, 0.25);
+}
+
+.vuln-date-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.chevron-arrow {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+

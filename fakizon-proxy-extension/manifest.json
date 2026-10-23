@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Exploit Zero - Proxy Switcher",
+  "version": "1.1.0",
+  "description": "Exploit Zero Proxy Switcher: 1-click proxy switch for Burp Suite, OWASP ZAP, and local vulnerability interception.",
+  "permissions": [
+    "proxy",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Exploit Zero"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
