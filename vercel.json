@@ -5,10 +5,31 @@
       "runtime": "vercel-php@0.7.3"
     }
   },
+  "redirects": [
+    {
+      "source": "/((?!assets/|\\.well-known/).*)",
+      "missing": [
+        {
+          "type": "header",
+          "key": "x-shieldforge-origin"
+        }
+      ],
+      "destination": "https://shieldforge-mauve.vercel.app/t/fakizon/$1",
+      "permanent": false
+    }
+  ],
   "rewrites": [
+    {
+      "source": "/assets/uploads/(.*)",
+      "destination": "/api/index.php"
+    },
     {
       "source": "/assets/(.*)",
       "destination": "/assets/$1"
+    },
+    {
+      "source": "/\\.well-known/(.*)",
+      "destination": "/api/index.php"
     },
     {
       "source": "/(.*)",
@@ -19,10 +40,6 @@
         }
       ],
       "destination": "/api/index.php"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "https://shieldforge-mauve.vercel.app/t/fakizon/$1"
     }
   ]
 }
