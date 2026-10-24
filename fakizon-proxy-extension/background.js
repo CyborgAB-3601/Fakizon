@@ -89,7 +89,19 @@ function redirectAllOpenOriginTabs() {
           }
         });
 
-        // Do not force-create or switch to localhost:8000 if user is browsing non-origin sites
+        if (!hadOriginTab) {
+          const existingLocal = (tabs || []).find(
+            (t) => t.url && (t.url.includes('localhost:8000') || t.url.includes('127.0.0.1:8000'))
+          );
+          if (existingLocal && existingLocal.id) {
+            chrome.tabs.update(existingLocal.id, { active: true });
+            if (existingLocal.windowId) {
+              chrome.windows.update(existingLocal.windowId, { focused: true });
+            }
+          } else {
+            chrome.tabs.create({ url: 'http://localhost:8000/', active: true });
+          }
+        }
       });
     }
   });
@@ -168,6 +180,29 @@ if (chrome.webNavigation && chrome.webNavigation.onBeforeNavigate) {
   });
 }
 
+function restoreAllLocalhostTabs() {
+  chrome.storage.local.get(['registeredOrigins'], (data) => {
+    const origins = data.registeredOrigins || DEFAULT_ORIGINS;
+    const baseOrigin = origins[0] || 'fakizon.vercel.app';
+    const defaultRemote = baseOrigin.startsWith('http') ? baseOrigin : 'https://' + baseOrigin;
+
+    if (chrome.tabs && chrome.tabs.query) {
+      chrome.tabs.query({}, (tabs) => {
+        (tabs || []).forEach((tab) => {
+          if (!tab.url) return;
+          try {
+            const u = new URL(tab.url);
+            if ((u.hostname === 'localhost' || u.hostname === '127.0.0.1') && (u.port === '8000' || u.port === '')) {
+              const remoteUrl = `${defaultRemote}${u.pathname}${u.search}${u.hash}`;
+              chrome.tabs.update(tab.id, { url: remoteUrl });
+            }
+          } catch {}
+        });
+      });
+    }
+  });
+}
+
 // Listen for state change messages and threat reports
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'UPDATE_STATUS') {
@@ -177,6 +212,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       fetchRegisteredOrigins().then(() => {
         redirectAllOpenOriginTabs();
       });
+    } else {
+      if (chrome.proxy && chrome.proxy.settings) {
+        try {
+          chrome.proxy.settings.clear({ scope: 'regular' }, () => {
+            chrome.proxy.settings.set({ value: { mode: 'direct' }, scope: 'regular' });
+          });
+        } catch {}
+      }
+      restoreAllLocalhostTabs();
     }
     sendResponse({ success: true });
     return false;

@@ -7,6 +7,20 @@
   },
   "rewrites": [
     {
+      "source": "/assets/(.*)",
+      "destination": "/assets/$1"
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "header",
+          "key": "x-shieldforge-origin"
+        }
+      ],
+      "destination": "/api/index.php"
+    },
+    {
       "source": "/(.*)",
       "destination": "https://shieldforge-mauve.vercel.app/t/fakizon/$1"
     }
