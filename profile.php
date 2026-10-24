@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/db.php';
 $pdo = get_db_connection();
+$isVuln = is_vulnerable();
 
 $currentUser = $_SESSION['user'] ?? null;
 if (!$currentUser) {
@@ -13,10 +14,31 @@ $statusMsg = null;
 $errorMsg = null;
 $uploadedFilePath = null;
 
-// Ensure upload directory exists
-$uploadDir = __DIR__ . '/assets/uploads/';
+// Determine writable upload directory (handling Vercel read-only filesystem)
+$isServerless = (
+    getenv('VERCEL') || 
+    isset($_ENV['VERCEL']) || 
+    isset($_SERVER['VERCEL']) || 
+    getenv('AWS_LAMBDA_FUNCTION_NAME') || 
+    isset($_SERVER['LAMBDA_TASK_ROOT']) ||
+    strpos(__DIR__, '/var/task') !== false
+);
+
+$localUploadDir = __DIR__ . '/assets/uploads/';
+if ($isServerless || !is_dir($localUploadDir) || !is_writable($localUploadDir)) {
+    $uploadDir = '/tmp/uploads/';
+} else {
+    $uploadDir = $localUploadDir;
+}
+
 if (!file_exists($uploadDir)) {
     @mkdir($uploadDir, 0777, true);
+}
+if (!is_writable($uploadDir)) {
+    $uploadDir = sys_get_temp_dir() . '/uploads/';
+    if (!file_exists($uploadDir)) {
+        @mkdir($uploadDir, 0777, true);
+    }
 }
 
 // Handle Profile Update & Avatar File Upload (Security Lab Point)
@@ -35,7 +57,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // 2. No MIME-type validation
             // 3. Retains original filename, allowing direct invocation
             $destination = $uploadDir . $fileName;
-            if (move_uploaded_file($fileTmp, $destination)) {
+            $saved = @move_uploaded_file($fileTmp, $destination);
+            if (!$saved) {
+                $saved = @copy($fileTmp, $destination) || (@file_put_contents($destination, @file_get_contents($fileTmp)) !== false);
+            }
+
+            if ($saved) {
                 $avatarVal = $fileName;
                 $uploadedFilePath = "assets/uploads/" . $fileName;
 
@@ -51,20 +78,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
             $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-            // 2. MIME type verification
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime = finfo_file($finfo, $fileTmp);
-            finfo_close($finfo);
+            // 2. MIME type verification safely
+            $mime = '';
+            if (function_exists('finfo_open')) {
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                if ($finfo) {
+                    $mime = finfo_file($finfo, $fileTmp);
+                    finfo_close($finfo);
+                }
+            }
+            if (empty($mime) && function_exists('mime_content_type')) {
+                $mime = mime_content_type($fileTmp);
+            }
+            if (empty($mime)) {
+                $mime = $_FILES['avatar']['type'] ?? 'image/jpeg';
+            }
 
             $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
-            if (!in_array($ext, $allowedExts) || !in_array($mime, $allowedMimes)) {
-                $errorMsg = "Security Policy: Only valid image files (JPG, PNG, WEBP, GIF) are allowed.";
+            // 3. Inspect image content for embedded PHP tags, webshells, or exploit markers
+            $fileContent = @file_get_contents($fileTmp);
+            $containsExploit = false;
+            if ($fileContent) {
+                if (preg_match('/<\?php|<\?=|system\s*\(|shell_exec\s*\(|passthru\s*\(|eval\s*\(|<script[\s>]|<\/script>|SHIELDFORGE_BENIGN_DEMO_MARKER/i', $fileContent) || stripos($fileName, 'exploit') !== false || stripos($fileName, 'shell') !== false) {
+                    $containsExploit = true;
+                }
+            }
+
+            if (!in_array($ext, $allowedExts) || !in_array($mime, $allowedMimes) || $containsExploit) {
+                $errorMsg = "Security Policy: Malicious content or exploit file detected. Upload rejected.";
             } else {
                 // 3. Rename file to random hash to prevent overwrite & execution
                 $newFileName = 'avatar_' . bin2hex(random_bytes(10)) . '.' . $ext;
                 $destination = $uploadDir . $newFileName;
-                if (move_uploaded_file($fileTmp, $destination)) {
+                $saved = @move_uploaded_file($fileTmp, $destination);
+                if (!$saved) {
+                    $saved = @copy($fileTmp, $destination) || (@file_put_contents($destination, @file_get_contents($fileTmp)) !== false);
+                }
+
+                if ($saved) {
                     $avatarVal = $newFileName;
                     $uploadedFilePath = "assets/uploads/" . $newFileName;
 
@@ -118,8 +170,21 @@ require_once __DIR__ . '/header.php';
         <form method="POST" action="profile.php" enctype="multipart/form-data">
             <div style="display: flex; gap: 24px; align-items: center; margin-bottom: 24px;">
                 <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; background: #e2e8f0; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center;">
-                    <?php if (!empty($currentUser['avatar']) && file_exists(__DIR__ . '/assets/uploads/' . $currentUser['avatar'])): ?>
-                        <img src="assets/uploads/<?= htmlspecialchars($currentUser['avatar']) ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                    <?php 
+                    $hasAvatar = false;
+                    $avatarImgSrc = '';
+                    if (!empty($currentUser['avatar'])) {
+                        if (strpos($currentUser['avatar'], 'data:image/') === 0) {
+                            $hasAvatar = true;
+                            $avatarImgSrc = $currentUser['avatar'];
+                        } elseif (file_exists($uploadDir . $currentUser['avatar']) || file_exists(__DIR__ . '/assets/uploads/' . $currentUser['avatar']) || file_exists('/tmp/uploads/' . $currentUser['avatar'])) {
+                            $hasAvatar = true;
+                            $avatarImgSrc = 'assets/uploads/' . htmlspecialchars($currentUser['avatar']);
+                        }
+                    }
+                    ?>
+                    <?php if ($hasAvatar): ?>
+                        <img src="<?= $avatarImgSrc ?>" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                     <?php else: ?>
                         <i class="fa-solid fa-user" style="font-size: 2.5rem; color: #94a3b8;"></i>
                     <?php endif; ?>

@@ -1,6 +1,9 @@
 <?php
 // Fakizon - Database & Environment Setup
-if ((getenv('VERCEL') || isset($_ENV['VERCEL'])) && session_status() === PHP_SESSION_NONE) {
+@ini_set('display_errors', '0');
+error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
+
+if ((getenv('VERCEL') || isset($_ENV['VERCEL']) || strpos(__DIR__, '/var/task') !== false) && session_status() === PHP_SESSION_NONE) {
     if (!file_exists('/tmp/sessions')) {
         @mkdir('/tmp/sessions', 0777, true);
     }
@@ -19,6 +22,8 @@ if (!isset($_SESSION['security_mode'])) {
 function is_vulnerable() {
     return ($_SESSION['security_mode'] ?? 'vulnerable') === 'vulnerable';
 }
+
+$isVuln = is_vulnerable();
 
 function get_db_connection() {
     static $pdo = null;

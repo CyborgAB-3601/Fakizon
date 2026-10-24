@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/db.php';
 $pdo = get_db_connection();
+$isVuln = is_vulnerable();
 
 if (isset($_SESSION['user'])) {
     header("Location: index.php");

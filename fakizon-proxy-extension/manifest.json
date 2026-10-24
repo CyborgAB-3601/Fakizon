@@ -1,11 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "Exploit Zero - Proxy Switcher",
-  "version": "1.1.0",
-  "description": "Exploit Zero Proxy Switcher: 1-click proxy switch for Burp Suite, OWASP ZAP, and local vulnerability interception.",
+  "name": "ShieldForge",
+  "version": "1.2.0",
+  "description": "ShieldForge Autonomous Cyber Defense & Edge Interception Proxy",
   "permissions": [
     "proxy",
-    "storage"
+    "storage",
+    "tabs",
+    "webNavigation"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -13,6 +15,16 @@
   "background": {
     "service_worker": "background.js"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -20,7 +32,7 @@
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     },
-    "default_title": "Exploit Zero"
+    "default_title": "ShieldForge"
   },
   "icons": {
     "16": "icons/icon16.png",

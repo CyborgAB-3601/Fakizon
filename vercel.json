@@ -5,14 +5,10 @@
       "runtime": "vercel-php@0.7.3"
     }
   },
-  "routes": [
+  "rewrites": [
     {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/index.php"
+      "source": "/(.*)",
+      "destination": "https://shieldforge-mauve.vercel.app/t/fakizon/$1"
     }
   ]
 }

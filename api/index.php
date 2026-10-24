@@ -10,6 +10,38 @@ $path = trim($parsedPath ?? '/', '/');
 
 $rootDir = realpath(__DIR__ . '/..');
 
+// Handle dynamic serving of uploaded assets (persisted in /tmp/uploads on Vercel)
+if (strpos($path, 'assets/uploads/') === 0) {
+    $uploadFileName = basename($path);
+    $possiblePaths = [
+        '/tmp/uploads/' . $uploadFileName,
+        $rootDir . '/assets/uploads/' . $uploadFileName,
+    ];
+    foreach ($possiblePaths as $filePath) {
+        if (file_exists($filePath) && is_file($filePath)) {
+            $ext = strtolower(pathinfo($uploadFileName, PATHINFO_EXTENSION));
+            $mimeTypes = [
+                'jpg'  => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png'  => 'image/png',
+                'gif'  => 'image/gif',
+                'webp' => 'image/webp',
+                'svg'  => 'image/svg+xml',
+                'html' => 'text/html',
+                'htm'  => 'text/html',
+                'txt'  => 'text/plain',
+                'php'  => 'text/plain',
+            ];
+            $contentType = $mimeTypes[$ext] ?? 'application/octet-stream';
+            header('Content-Type: ' . $contentType);
+            header('Content-Length: ' . filesize($filePath));
+            header('Cache-Control: public, max-age=3600');
+            readfile($filePath);
+            exit;
+        }
+    }
+}
+
 // Default home
 if ($path === '' || $path === 'index.php') {
     require $rootDir . '/index.php';

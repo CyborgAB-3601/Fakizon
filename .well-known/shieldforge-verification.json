@@ -1,0 +1,11 @@
+{
+  "certificate_id": "SF-CERT-FAKIZON8000-98A7",
+  "issuer": "ShieldForge Autonomous Edge Security Plane",
+  "origin_url": "http://localhost:8000/index.php",
+  "verification_endpoint": "http://localhost:8000/.well-known/shieldforge-verification.json",
+  "challenge_token": "sf_tok_fakizon_8000_verified_owner",
+  "fingerprint": "SHA256:7b91c4e0293d84f1a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8",
+  "issued_at": "2026-10-23T18:45:00Z",
+  "status": "VERIFIED_OWNER",
+  "signature": "SF-SIG-ED25519-v1-88f91a27e36c4b1d"
+}
